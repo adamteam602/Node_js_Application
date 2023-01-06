@@ -1,16 +1,26 @@
+//***************************************//
+//                                       //
+//  Author : Abhijit Kailas Gadhave      //
+//  Date   :   06/01/2023                //
+//                                       //
+//***************************************//
+
+//****************************************//
+// Below All are third party Dependencies //
+// Which are required to import in our    //
+// Code                                   //
+//****************************************//
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
 var path = require('path');
-
-
-// app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({extended : false}),express.static(__dirname))
-
 var mysql = require('mysql');
 const e = require('express');
+const { type } = require('os');
 app.use('/images', express.static(__dirname + 'images'))
 
+// DataBase Information
 var con = mysql.createConnection({
   host: "localhost",
   post: 3306,
@@ -19,9 +29,9 @@ var con = mysql.createConnection({
   database: "Skill_DataBase_Project"
 });
 
+// Start The Server
 const port = 3000
 app.listen(port,start)
-
 function start(){
     console.log("This app is listening on port 3000")
 }
@@ -30,22 +40,28 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')))
 
+// Render the First Login File 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/login.html");
 });
 flag = true;
 
 
+////////////////////////////////////////////////////////
+// Name of the function : AddSkill                    //      
+// Input parameters : No                              //
+// return value : void                                //
+// Description of the function : No                   // 
+// Use : It is used to Connect Mysql Database to      //
+//      NodeJs Server                                 //
+////////////////////////////////////////////////////////
 con.connect(function (err) {
     if
       (err)
       console.log(err);
     else
       console.log("Connected!");
-
-
-
-  })
+})
 
 
 // Addskill
@@ -58,8 +74,7 @@ app.post('/create_contact', (req, res) => {
   var Domain = req.body.Domain;
   
 	console.log(name+" "+skill+" "+YOE+" "+skill_level + " "+Domain)
-//   AddSkill(name,skill,skill_level,YOE,Domain)
-	console.log("ABHi")
+
    bret = AddSkill(name,skill,skill_level,YOE,Domain)
    AddUserSkill(name,skill)
    console.log(bret);
@@ -75,6 +90,15 @@ app.post('/create_contact', (req, res) => {
   
 })
 
+////////////////////////////////////////////////////////
+// Name of the function : AddSkill                    //      
+// Input parameters : Name,skill,level,yoe,Domain     //
+// return value : void                                //
+// Description of the function : No                   // 
+// Use : It is used to Add the Skill of User and      //
+//      Create New table in the Database, if table    //
+//      doesn't exists in the database                //
+////////////////////////////////////////////////////////
 
 function AddSkill(name, skill,level,yoe,Domain)
 {
@@ -117,7 +141,18 @@ function AddSkill(name, skill,level,yoe,Domain)
 	});
 	console.log("ABhi")
 }
- // To Store all user skills
+
+// To Store all user skills
+
+////////////////////////////////////////////////////////
+// Name of the function : AddUserSkill                //      
+// Input parameters : Name,skill                      //
+// return value : void                                //
+// Description of the function : No                   // 
+// Use : It is used to also Add the Skill of User     //
+//         But if want to compare all skills then at  //
+//         that point of view this function is used   //
+////////////////////////////////////////////////////////
 function AddUserSkill(name,skill)
 {
 	sql = "INSERT INTO Allskills (skill,Name)VALUES ?";
@@ -129,6 +164,16 @@ function AddUserSkill(name,skill)
 				console.log("Inserted Succeffully");
 		})
 }
+
+////////////////////////////////////////////////////////
+// Name of the function : DeleteUserSkill             //      
+// Input parameters : Name,skill                      //
+// return value : void                                //
+// Description of the function : No                   // 
+// Use : It is used to also Delete the Skill of User  //
+//         But if want to compare all skills then at  //
+//         that point of view this function is used   //
+////////////////////////////////////////////////////////
 
 function DeleteUserSkill(skill)
 {
@@ -143,6 +188,15 @@ function DeleteUserSkill(skill)
 }
 
 // Update Skill
+////////////////////////////////////////////////////////
+// Name of the function : UpdateSkill                 //      
+// Input parameters : Name,skill,level,yoe,Domain     //
+// return value : HTML FILE                           //
+// Description of the function : No                   // 
+// Use : It is used to Update the Skill of User and   //
+//      in the existing table which are created at the//
+//      time of Adding the skill                      //
+////////////////////////////////////////////////////////
 
 app.post('/updateskill', function(req, res) {
 	var name = req.body.name1;
@@ -167,7 +221,7 @@ app.post('/updateskill', function(req, res) {
   });
 
   // Delete Skill
-  app.post('/deleteskill',function(req,res){
+	app.post('/deleteskill',function(req,res){
 	var name = req.body.name1;
 	var skill = req.body.skill;
 
@@ -178,6 +232,15 @@ app.post('/updateskill', function(req, res) {
 
   });
 
+////////////////////////////////////////////////////////
+// Name of the function : DeleteSkill                 //      
+// Input parameters : Name,skill                      //
+// return value : void                                //
+// Description of the function : No                   // 
+// Use : It is used to  Delete the Skill of User      //
+//         from the database which are added at the   //
+//         time of adding the skill                   //
+////////////////////////////////////////////////////////
   function DeleteSkill(name,skill)
   {
 	sql = "Delete from `"+name+"` where skill= '"+skill+"';"
@@ -213,10 +276,19 @@ app.post('/updateskill', function(req, res) {
 		// throw err;
 	
 	res.render('skill_list', { data : data});
-	// res.send(result)
+	// res.send(data)
   });
 });
 
+////////////////////////////////////////////////////////
+// Name of the function : ShowSkill                   //      
+// Input parameters : First_Name,Last_Name            //
+// return value : void                                //
+// Description of the function : No                   // 
+// Use : If we want to show the skill of particular   //
+//         user which are present in the database     //
+//         then these function will be used           //
+////////////////////////////////////////////////////////
  
 function ShowSkill(fname,lname)
 {
@@ -254,6 +326,17 @@ function ShowSkill(fname,lname)
 
 // Show Peoples with Similar Skills
 
+////////////////////////////////////////////////////////
+// Name of the function : ShowPeoples                 //      
+// Input parameters : Skill                           //
+// return value : Excel File                          //
+// Description of the function : No                   // 
+// Use : If we want to show the peoples which have    //
+//        particular skill then list out that peoples //
+//        write their names in excel file and able to //
+//        to give download option to user             //
+////////////////////////////////////////////////////////
+
 app.post('/showpeoples',function(req,res){
 	var skill = req.body.skill;
 	var sql="SELECT Name FROM Allskills where skill='"+skill+"'";
@@ -263,12 +346,46 @@ app.post('/showpeoples',function(req,res){
 			res.send("No Such Username Added If You Want to add go to add skill on Home Page");
 			// throw err;
 		
-		res.render('people_list', { data : data});
+		// res.render('people_list', { data : data});
 
+		tutorials = []
+		data.forEach((obj) => {
+			tutorials.push({
+			  name: obj.Name
+			});
+		  });
 
-	}) 
+		const excel = require("exceljs");
+		
+		let workbook = new excel.Workbook();
+		let worksheet = workbook.addWorksheet("Tutorials");
+		worksheet.columns = [
+			{ Header: "Title", key: "name", width: 35 }
+		  ];
+	
+		
+	
+		// Add Array Rows
+		console.log(typeof(data))
+		worksheet.addRows(tutorials);
+	
+		// res is a Stream object
+		res.setHeader(
+		"Content-Type",
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+		);
+		res.setHeader(
+		"Content-Disposition",
+		"attachment; filename=" + "tutorials.xlsx"
+		);
+	
+		return workbook.xlsx.write(res).then(function () {
+		res.status(200).end();
+		});
+	
+
+	});
 });
-
 
 
 
